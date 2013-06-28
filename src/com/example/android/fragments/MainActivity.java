@@ -103,6 +103,9 @@ public class MainActivity extends FragmentActivity implements HeadlinesFragment.
     }
   }
 
+  /**
+   * Override the onBackPressed so that we can change the activity title (title on action bar)
+   */
   @Override
   public void onBackPressed() {
     super.onBackPressed();

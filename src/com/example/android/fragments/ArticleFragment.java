@@ -23,54 +23,64 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class ArticleFragment extends Fragment {
-    final static String ARG_POSITION = "position";
-    int mCurrentPosition = -1;
+  final static String ARG_POSITION = "position";
+  int mCurrentPosition = -1;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, 
-        Bundle savedInstanceState) {
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
 
-        // If activity recreated (such as from screen rotate), restore
-        // the previous article selection set by onSaveInstanceState().
-        // This is primarily necessary when in the two-pane layout.
-        if (savedInstanceState != null) {
-            mCurrentPosition = savedInstanceState.getInt(ARG_POSITION);
-        }
-
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.article_view, container, false);
+    // If activity recreated (such as from screen rotate), restore
+    // the previous article selection set by onSaveInstanceState().
+    // This is primarily necessary when in the two-pane layout.
+    if (savedInstanceState != null) {
+      mCurrentPosition = savedInstanceState.getInt(ARG_POSITION);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    // Inflate the layout for this fragment
+    return inflater.inflate(R.layout.article_view, container, false);
+  }
 
-        // During startup, check if there are arguments passed to the fragment.
-        // onStart is a good place to do this because the layout has already been
-        // applied to the fragment at this point so we can safely call the method
-        // below that sets the article text.
-        Bundle args = getArguments();
-        if (args != null) {
-            // Set article based on argument passed in
-            updateArticleView(args.getInt(ARG_POSITION));
-        } else if (mCurrentPosition != -1) {
-            // Set article based on saved instance state defined during onCreateView
-            updateArticleView(mCurrentPosition);
-        }
-      getActivity().setTitle("Title Changed");
+  /**
+   * Method to change activity title
+   * @param title String for activity title
+   */
+  private void setTitle(String title) {
+    getActivity().setTitle(title);
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+
+    // During startup, check if there are arguments passed to the fragment.
+    // onStart is a good place to do this because the layout has already been
+    // applied to the fragment at this point so we can safely call the method
+    // below that sets the article text.
+    Bundle args = getArguments();
+    if (args != null) {
+      // Set article based on argument passed in
+      int argPosition = args.getInt(ARG_POSITION);
+      updateArticleView(argPosition);
+      setTitle("Article " + argPosition);
+    } else if (mCurrentPosition != -1) {
+      // Set article based on saved instance state defined during onCreateView
+      updateArticleView(mCurrentPosition);
+      setTitle("Article " + mCurrentPosition);
     }
+  }
 
-    public void updateArticleView(int position) {
-        TextView article = (TextView) getActivity().findViewById(R.id.article);
-        article.setText("List position " + position + " was clicked");
-        mCurrentPosition = position;
-    }
+  public void updateArticleView(int position) {
+    TextView article = (TextView) getActivity().findViewById(R.id.article);
+    article.setText("List position " + position + " was clicked");
+    mCurrentPosition = position;
+  }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
 
-        // Save the current article selection in case we need to recreate the fragment
-        outState.putInt(ARG_POSITION, mCurrentPosition);
-    }
+    // Save the current article selection in case we need to recreate the fragment
+    outState.putInt(ARG_POSITION, mCurrentPosition);
+  }
 }
